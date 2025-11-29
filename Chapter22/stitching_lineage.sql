@@ -1,0 +1,8 @@
+-- Operational touch points (daily snapshot recommended)
+CREATE OR REPLACE VIEW gov_api.v_usage AS
+SELECT TO_DATE(QUERY_START_TIME) AS day,
+       DIRECT_OBJECTS_ACCESSED:objectName::string AS obj,
+       ROLE_NAME, USER_NAME, COUNT(*) AS reads
+FROM SNOWFLAKE.ACCOUNT_USAGE.ACCESS_HISTORY
+WHERE QUERY_START_TIME >= DATEADD(day,-7,CURRENT_TIMESTAMP())
+GROUP BY 1,2,3,4;

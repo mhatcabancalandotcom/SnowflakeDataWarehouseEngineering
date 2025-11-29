@@ -1,0 +1,10 @@
+version: 2
+exposures:
+  - name: sales_executive_dashboard
+    type: dashboard
+    maturity: high
+    owner:
+      name: Analytics
+      email: analytics@example.com
+    depends_on:
+      - ref('fact_orders')

@@ -1,0 +1,16 @@
+-- BI: elastic lanes, small cores, warm enough for caches
+CREATE WAREHOUSE wh_bi
+  WAREHOUSE_SIZE = 'SMALL'
+  MIN_CLUSTER_COUNT = 1
+  MAX_CLUSTER_COUNT = 4
+  SCALING_POLICY = 'STANDARD'
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE;
+
+-- ELT: muscle for heavy steps, no contention with BI
+CREATE WAREHOUSE wh_elt
+  WAREHOUSE_SIZE = 'LARGE'
+  MIN_CLUSTER_COUNT = 1
+  MAX_CLUSTER_COUNT = 1
+  AUTO_SUSPEND = 300
+  AUTO_RESUME = TRUE;

@@ -1,0 +1,10 @@
+version: 2
+models:
+  - name: v_orders_public
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: d
+        tests: [not_null]
+      - name: amount
+        tests: [not_null]

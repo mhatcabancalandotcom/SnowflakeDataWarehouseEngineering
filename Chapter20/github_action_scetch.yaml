@@ -1,0 +1,76 @@
+name: ci-cd-snowflake
+
+on:
+  pull_request:
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint SQL
+        run: sqlfluff lint sql/**/*.sql || (sqlfluff fix --force && exit 1)
+      - name: Build Snowpark wheel
+        run: |
+          cd snowpark/python
+          pip install -U build
+          python -m build
+      - name: dbt compile
+        run: |
+          cd dbt
+          pip install dbt-snowflake
+          dbt deps && dbt compile
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            snowpark/python/dist/*.whl
+            dbt/target
+            sql/
+
+  ephemeral-int:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: build-artifacts, path: ./artifacts }
+      - name: Prepare ephemeral clone & secrets
+        env:
+          SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD_CI }}
+        run: |
+          snowsql -q "CREATE DATABASE IF NOT EXISTS ci_base;
+                      CREATE OR REPLACE DATABASE ci_run CLONE ci_base;"
+      - name: Apply SQL migrations (idempotent)
+        run: |
+          for f in sql/migrations/*.sql; do snowsql -f "$f" -D TARGET_DB=ci_run; done
+      - name: Install Snowpark package
+        run: |
+          snowsql -q "CREATE STAGE IF NOT EXISTS ops.pkg;
+                      PUT file://artifacts/*.whl @ops.pkg AUTO_COMPRESS=FALSE;"
+      - name: dbt run + test
+        run: |
+          cd dbt
+          dbt run --profiles-dir . --target ci --vars '{"target_db":"CI_RUN"}'
+          dbt test --profiles-dir . --target ci
+
+  promote:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: ephemeral-int
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: build-artifacts, path: ./artifacts }
+      - name: Deploy to prod_candidate
+        run: |
+          snowsql -q "CREATE OR REPLACE DATABASE prod_candidate CLONE prod;"
+          for f in sql/migrations/*.sql; do snowsql -f "$f" -D TARGET_DB=prod_candidate; done
+          snowsql -q "PUT file://artifacts/*.whl @ops.pkg AUTO_COMPRESS=FALSE;"
+          # smoke tests
+          snowsql -q "SELECT COUNT(*) FROM prod_candidate.mart.fact_orders;"
+      - name: Atomic swap
+        run: snowsql -q "ALTER DATABASE prod_candidate SWAP WITH prod;"

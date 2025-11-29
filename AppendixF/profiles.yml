@@ -1,0 +1,24 @@
+snowflake:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user:    "{{ env_var('SNOWFLAKE_USER') }}"
+      password:"{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role:    "ROLE_ELT_WRITER_SALES"
+      warehouse: "WH_ELT_SALES"
+      database: "DEV"
+      schema:   "DEV_APP"
+      threads: 8
+      client_session_keep_alive: false
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      authenticator: oauth
+      token: "{{ env_var('SNOWFLAKE_OAUTH_TOKEN') }}"
+      role:    "ROLE_ELT_WRITER_SALES"
+      warehouse: "WH_ELT_SALES"
+      database: "PROD"
+      schema:   "PUBLIC"
+      threads: 16

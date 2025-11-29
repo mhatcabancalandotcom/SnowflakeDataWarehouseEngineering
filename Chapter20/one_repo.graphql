@@ -1,0 +1,14 @@
+repo/
+  sql/
+    migrations/            # 001_init.sql, 002_add_dim_customer.sql, ...
+    policies/              # masking/row access DDL
+    warehouses/            # IaC-like DDL for lanes/monitors
+  snowpark/
+    python/                # src/, pyproject.toml, requirements.txt
+    scala_java/            # sbt/maven module if used
+    tests/                 # unit tests; fakes for UDFs
+  dbt/
+    dbt_project.yml
+    models/                # marts, staging, snapshots
+    tests/                 # generic + bespoke tests
+    macros/

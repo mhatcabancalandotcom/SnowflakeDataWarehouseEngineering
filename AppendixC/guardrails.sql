@@ -1,0 +1,2 @@
+ALTER SESSION SET QUERY_TAG='team=platform;purpose=perf_check';
+ALTER WAREHOUSE wh_ad_hoc SET STATEMENT_TIMEOUT_IN_SECONDS=900;

@@ -1,0 +1,34 @@
+name: warehouse
+version: 1.0.0
+config-version: 2
+
+profile: snowflake
+
+model-paths: ["models"]
+seed-paths:  ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+models:
+  +persist_docs: {relation: true, columns: true}
+  +query_tag: "app=dbt;project=warehouse;env={{ target.name }}"
+  +on_schema_change: append_new_columns
+  warehouse:
+    staging:
+      +materialized: view
+      +tags: ["stage"]
+    intermediate:
+      +materialized: ephemeral
+      +tags: ["int"]
+    marts:
+      +materialized: table     # or view if you publish secure views via SQL wrappers
+      +tags: ["mart"]
+      sales:
+        +schema: sales_mart
+        +grants:
+          select: ["ROLE_BI_APP","ROLE_ANALYST"]
+seeds:
+  +column_types:
+    rate: numeric
+    iso:  string

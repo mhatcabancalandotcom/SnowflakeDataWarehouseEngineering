@@ -1,0 +1,11 @@
+version: 2
+models:
+  - name: fact_orders
+    description: "Canonical orders fact; one row per order."
+    columns:
+      - name: tenant_id
+        tests: [not_null]
+      - name: order_id
+        tests: [not_null, unique]
+      - name: d
+        tests: [not_null]

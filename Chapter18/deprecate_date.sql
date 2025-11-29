@@ -1,0 +1,3 @@
+CREATE OR REPLACE TABLE MART.SERVICE_LOG (
+  ts TIMESTAMP_NTZ, severity STRING, object_name STRING, summary STRING, status STRING
+);

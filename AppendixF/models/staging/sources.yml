@@ -1,0 +1,8 @@
+version: 2
+sources:
+  - name: raw
+    database: PROD
+    schema: RAW
+    tables:
+      - name: orders_json
+      - name: customers

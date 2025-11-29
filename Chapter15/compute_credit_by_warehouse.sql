@@ -1,0 +1,8 @@
+SELECT
+  warehouse_name,
+  TO_DATE(start_time) AS day,
+  SUM(credits_used)   AS credits
+FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY
+WHERE start_time >= DATEADD(day, -30, CURRENT_TIMESTAMP())
+GROUP BY 1,2
+ORDER BY 2,1;

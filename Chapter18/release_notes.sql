@@ -1,0 +1,4 @@
+CREATE OR REPLACE VIEW MART.V_RELEASE_NOTES AS
+SELECT '2025-09-12' AS dt, 'V_ORDERS_V2 adds column order_channel' AS note
+UNION ALL
+SELECT '2025-08-01', 'Initial V1 release';

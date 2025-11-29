@@ -1,0 +1,1 @@
+ALTER USER elt_runner SET RSA_PUBLIC_KEY='MIIBIjANBgkqh...';

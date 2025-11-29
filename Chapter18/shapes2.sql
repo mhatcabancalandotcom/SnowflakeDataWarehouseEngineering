@@ -1,0 +1,4 @@
+CREATE OR REPLACE VIEW MART.V_RELEASE_NOTES AS
+SELECT '2025-09-10'::DATE AS dt, 'V_ORDERS_V1', 'Add order_channel (non-breaking)', NULL::DATE AS deprecates_on
+UNION ALL
+SELECT '2025-08-01','V_CUSTOMERS_V1','Initial release', NULL;

@@ -1,0 +1,10 @@
+CREATE OR REPLACE SECURITY INTEGRATION ext_oauth_app
+  TYPE = EXTERNAL_OAUTH
+  ENABLED = TRUE
+  OAUTH_ISSUER = 'https://auth.example.com'     -- your IdP or gateway
+  OAUTH_CLIENT = 'my-bi-app'
+  OAUTH_CLIENT_TYPE = 'CONFIDENTIAL'
+  OAUTH_REDIRECT_URI = 'https://app.example.com/callback'
+  OAUTH_ALLOW_NON_TLS = FALSE
+  OAUTH_ENFORCE_PKCE = TRUE
+  OAUTH_ALLOWED_ROLES_LIST = ('ROLE_BI_APP','ROLE_FIN_READER');

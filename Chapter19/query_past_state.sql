@@ -1,0 +1,3 @@
+SELECT * 
+FROM mart.fact_orders
+  AT (TIMESTAMP => TO_TIMESTAMP_TZ('2025-09-12 03:00:00 +00:00'));

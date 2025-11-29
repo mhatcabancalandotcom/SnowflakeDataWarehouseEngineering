@@ -1,0 +1,11 @@
+-- Freshness
+SELECT src, AVG(DATEDIFF('second', event_ts, received_ts)) AS avg_lag_s
+FROM raw.events_json
+WHERE received_ts >= DATEADD('minute', -10, CURRENT_TIMESTAMP())
+GROUP BY src;
+
+-- DT health (recent errors)
+SELECT NAME, ERROR_MESSAGE, LAST_REFRESH_TIME
+FROM SNOWFLAKE.ACCOUNT_USAGE.DYNAMIC_TABLE_REFRESH_HISTORY
+WHERE LAST_REFRESH_TIME >= DATEADD('hour', -1, CURRENT_TIMESTAMP())
+  AND ERROR_MESSAGE IS NOT NULL;

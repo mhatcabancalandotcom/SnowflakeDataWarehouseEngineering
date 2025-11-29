@@ -1,0 +1,14 @@
+name: dbt
+on: [push, pull_request]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install dbt-snowflake
+      - run: dbt deps
+      - run: dbt seed --target dev --full-refresh
+      - run: dbt run  --target dev --fail-fast
+      - run: dbt test --target dev

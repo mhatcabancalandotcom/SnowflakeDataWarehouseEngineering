@@ -1,0 +1,2 @@
+ALTER TABLE dim_customer MODIFY COLUMN email SET MASKING POLICY mask_pii;
+ALTER TABLE dim_customer MODIFY COLUMN phone SET MASKING POLICY mask_pii;

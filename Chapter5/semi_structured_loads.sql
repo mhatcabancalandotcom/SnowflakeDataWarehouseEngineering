@@ -1,0 +1,11 @@
+CREATE TABLE raw.events (
+  tenant_id  STRING,
+  event_dt   TIMESTAMP_NTZ,
+  payload    VARIANT
+);
+
+COPY INTO raw.events
+FROM @ext_events
+FILE_FORMAT = (TYPE = JSON, STRIP_OUTER_ARRAY = TRUE)
+MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
+ON_ERROR = 'ABORT_STATEMENT';

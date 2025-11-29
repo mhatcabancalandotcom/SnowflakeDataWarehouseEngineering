@@ -1,0 +1,9 @@
+CREATE OR REPLACE TASK t_normalize
+  WAREHOUSE = wh_elt
+  SCHEDULE  = '5 MINUTE'
+  USER_TASK_TIMEOUT_MS = 20*60*1000
+AS
+CREATE OR REPLACE TEMP TABLE work.orders_norm AS
+SELECT *
+FROM stage.orders_norm
+WHERE event_ts >= DATEADD('minute', -10, CURRENT_TIMESTAMP());

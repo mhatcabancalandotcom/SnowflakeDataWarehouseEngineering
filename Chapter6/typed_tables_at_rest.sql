@@ -1,0 +1,12 @@
+CREATE OR REPLACE TABLE core.fact_orders
+  USING TEMPLATE (
+    SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+    FROM TABLE(INFER_SCHEMA(
+      LOCATION => '@ext_sales_parquet/', FILE_FORMAT => 'PARQUET'
+    ))
+  );
+
+COPY INTO core.fact_orders
+FROM @ext_sales_parquet
+FILE_FORMAT = (TYPE=PARQUET)
+ON_ERROR = 'ABORT_STATEMENT';

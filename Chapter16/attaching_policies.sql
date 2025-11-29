@@ -1,0 +1,14 @@
+-- Masking example
+CREATE OR REPLACE MASKING POLICY mask_email AS (val STRING) RETURNS STRING ->
+  CASE WHEN CURRENT_ROLE() IN ('ROLE_FIN_OWNER','SECURITYADMIN') THEN val
+       ELSE REGEXP_REPLACE(val, '(^.).+(@.+$)', '\\1***\\2') END;
+
+ALTER TABLE FINANCE.MART.DIM_CUSTOMER
+  MODIFY COLUMN EMAIL SET MASKING POLICY mask_email;
+
+-- Row access example
+CREATE OR REPLACE ROW ACCESS POLICY tenant_guard AS (tenant_id STRING) RETURNS BOOLEAN ->
+  tenant_id = CURRENT_USER();  -- or look up from a mapping table
+
+ALTER TABLE FINANCE.MART.FACT_SALES
+  ADD ROW ACCESS POLICY tenant_guard ON (TENANT_ID);

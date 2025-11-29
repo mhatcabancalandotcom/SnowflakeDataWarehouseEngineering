@@ -1,0 +1,8 @@
+version: 2
+tests:
+  - name: fact_orders_no_future_dates
+    config: {severity: warn}
+    +sql: |
+      select 1
+      from {{ ref('fact_orders') }}
+      where d > current_date()

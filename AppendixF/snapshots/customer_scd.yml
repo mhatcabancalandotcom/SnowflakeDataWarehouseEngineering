@@ -1,0 +1,10 @@
+snapshots:
+  - name: snap_customer_scd
+    target_database: PROD
+    target_schema: SNAPSHOTS
+    strategy: timestamp
+    unique_key: customer_id
+    updated_at: updated_at
+    source:
+      name: raw
+      table: customers

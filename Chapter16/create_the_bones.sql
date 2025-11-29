@@ -1,0 +1,16 @@
+-- Platform compute roles
+CREATE ROLE ROLE_WH_BI;
+CREATE ROLE ROLE_WH_ELT;
+
+-- Domain roles for Finance
+CREATE ROLE ROLE_FIN_OWNER;
+CREATE ROLE ROLE_FIN_WRITER;
+CREATE ROLE ROLE_FIN_READER;
+
+-- Inheritance (readers/writers inherit compute lane if desired)
+GRANT ROLE ROLE_WH_BI   TO ROLE ROLE_FIN_READER;
+GRANT ROLE ROLE_WH_ELT  TO ROLE ROLE_FIN_WRITER;
+
+-- Bind to users (via USERADMIN)
+GRANT ROLE ROLE_FIN_READER TO USER alice;
+GRANT ROLE ROLE_FIN_WRITER TO USER elt_runner;

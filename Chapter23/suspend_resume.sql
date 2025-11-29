@@ -1,0 +1,3 @@
+ALTER TASK elt_refresh_fact_orders SUSPEND;
+-- …fix & swap…
+ALTER TASK elt_refresh_fact_orders RESUME;
